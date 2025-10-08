@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit User</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h3>Edit User</h3>
+    <form th:action="@{'/admin/update/' + ${user.id}}" method="post" th:object="${user}">
+        <div class="mb-3">
+            <label>Username</label>
+            <input type="text" th:field="*{username}" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Password</label>
+            <input type="password" th:field="*{password}" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Name</label>
+            <input type="text" th:field="*{name}" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label>Age</label>
+            <input type="number" th:field="*{age}" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label>Country</label>
+            <input type="text" th:field="*{country}" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label>Roles</label><br>
+            <div th:each="role : ${roles}">
+                <input type="checkbox"
+                       name="roles"
+                       th:value="${role.id}"
+                       th:checked="${user.roles.contains(role)}">
+                <span th:text="${role.name}"></span><br>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success">Update</button>
+        <a href="/admin" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+</body>
+</html>
