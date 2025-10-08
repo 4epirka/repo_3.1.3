@@ -8,6 +8,6 @@ import java.util.Optional;
 public interface RoleService {
     List<Role> findAll();
     Role findByName(String name);
-    Optional<Role> findById(Long id); // 🔥 добавляем этот метод
+    Optional<Role> findById(Long id);
     void save(Role role);
 }
