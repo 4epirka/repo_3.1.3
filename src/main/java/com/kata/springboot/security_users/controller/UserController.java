@@ -16,7 +16,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Страница личного кабинета
     @GetMapping("/user")
     public String showUserPage(Authentication authentication, Model model) {
         String username = authentication.getName();

@@ -29,7 +29,8 @@ public class AdminController {
     @GetMapping
     public String listUsers(Model model) {
         model.addAttribute("users", userService.findAll());
-        return "admin/users"; // thymeleaf шаблон: admin/users.html
+        model.addAttribute("roles", roleService.findAll());
+        return "admin/users";
     }
 
     @GetMapping("/new")
@@ -53,14 +54,6 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @GetMapping("/edit/{id}")
-    public String editUserForm(@PathVariable("id") Long id, Model model) {
-        User user = userService.findById(id).orElseThrow();
-        model.addAttribute("user", user);
-        model.addAttribute("roles", roleService.findAll());
-        return "admin/edit";
-    }
-
     @PostMapping("/update/{id}")
     public String updateUser(@PathVariable("id") Long id,
                              @ModelAttribute("user") User user,
@@ -77,7 +70,7 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
         userService.deleteById(id);
         return "redirect:/admin";
