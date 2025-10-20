@@ -26,10 +26,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Отключаем CSRF для REST
                 .csrf(csrf -> csrf.disable())
 
-                // Настройка авторизации
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/css/**", "/js/**", "/admin.html", "/user.html").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
@@ -37,20 +35,16 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                // Форма логина для фронта
                 .formLogin(form -> form
                         .loginPage("/login")
                         .successHandler(loginSuccessHandler) // <- добавьте это
                         .permitAll()
                 )
 
-                // Логаут
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
                 )
-
-                // Можно оставить HTTP Basic для тестов через Postman (опционально)
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();

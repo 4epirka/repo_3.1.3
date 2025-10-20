@@ -78,7 +78,6 @@ public class DataInitializer implements CommandLineRunner {
 
             userRepository.save(user);
         }
-
         System.out.println("Data initialization complete: roles and test users created.");
     }
 }

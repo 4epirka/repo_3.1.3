@@ -6,8 +6,6 @@ import com.kata.springboot.security_users.entity.User;
 import com.kata.springboot.security_users.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +30,6 @@ class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // --- вспомогательный метод ---
     private UserDTO toDTO(User user) {
         return new UserDTO(
                 user.getId(),

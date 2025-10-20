@@ -29,7 +29,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
     @Override
     @Transactional(readOnly = true)
     public List<User> findAll() {

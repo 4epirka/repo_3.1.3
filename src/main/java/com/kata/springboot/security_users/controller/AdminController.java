@@ -1,6 +1,5 @@
 package com.kata.springboot.security_users.controller;
 
-
 import com.kata.springboot.security_users.dto.UserDTO;
 import com.kata.springboot.security_users.dto.UserRequestDTO;
 import com.kata.springboot.security_users.entity.Role;
@@ -9,11 +8,7 @@ import com.kata.springboot.security_users.service.RoleService;
 import com.kata.springboot.security_users.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -91,7 +86,12 @@ public class AdminController {
         return ResponseEntity.notFound().build();
     }
 
-    // --- Вспомогательные методы ---
+    @GetMapping("/roles")
+    public List<String> getAllRoles() {
+        return roleService.findAll().stream()
+                .map(Role::getName)
+                .toList();
+    }
 
     private UserDTO toDTO(User user) {
         return new UserDTO(
