@@ -77,7 +77,7 @@ $('#editUserForm').on('submit', async function(e) {
         name: $('#edit-name').val(),
         age: parseInt($('#edit-age').val()),
         country: $('#edit-country').val(),
-        roles: new Set(roles)
+        roles: roles
     };
 
     // только если пароль введён — кодируем его на сервере
@@ -119,6 +119,36 @@ $('#confirm-delete').on('click', async function() {
         alert('Error deleting user: ' + err.message);
     }
 });
+
+// --- Создание нового пользователя ---
+$('#createUserForm').on('submit', async function(e) {
+    e.preventDefault();
+
+    const roles = $('#create-roles').val().split(',').map(r => r.trim());
+
+    const user = {
+        username: $('#create-username').val(),
+        password: $('#create-password').val(),
+        name: $('#create-name').val(),
+        age: parseInt($('#create-age').val()),
+        country: $('#create-country').val(),
+        roles: roles
+    };
+
+    try {
+        await fetchJSON('/api/admin/users', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(user)
+        });
+        $('#createUserModal').modal('hide');
+        $('#createUserForm')[0].reset(); // Очистка формы
+        await loadUsers();
+    } catch (err) {
+        alert('Error creating user: ' + err.message);
+    }
+});
+
 
 // --- Инициализация страницы ---
 $(document).ready(async function() {
