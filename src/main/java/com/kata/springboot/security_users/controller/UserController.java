@@ -1,14 +1,22 @@
 package com.kata.springboot.security_users.controller;
 
+import com.kata.springboot.security_users.dto.UserDTO;
+import com.kata.springboot.security_users.entity.Role;
 import com.kata.springboot.security_users.entity.User;
 import com.kata.springboot.security_users.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-public class UserController {
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/api/user")
+class UserController {
 
     private final UserService userService;
 
@@ -16,11 +24,26 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user")
-    public String showUserPage(Authentication authentication, Model model) {
+    @GetMapping
+    public ResponseEntity<UserDTO> getCurrentUser(Authentication authentication) {
         String username = authentication.getName();
-        User user = userService.findByUsername(username).orElseThrow();
-        model.addAttribute("user", user);
-        return "user"; // thymeleaf шаблон user.html
+        return userService.findByUsername(username)
+                .map(user -> ResponseEntity.ok(toDTO(user)))
+                .orElse(ResponseEntity.notFound().build());
     }
+
+    // --- вспомогательный метод ---
+    private UserDTO toDTO(User user) {
+        return new UserDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getName(),
+                user.getAge(),
+                user.getCountry(),
+                user.getRoles().stream()
+                        .map(Role::getName)
+                        .collect(Collectors.toSet())
+        );
+    }
+
 }

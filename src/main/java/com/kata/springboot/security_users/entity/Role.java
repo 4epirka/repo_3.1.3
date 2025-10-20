@@ -1,5 +1,6 @@
 package com.kata.springboot.security_users.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -18,6 +19,7 @@ public class Role implements GrantedAuthority {
     private String name;
 
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<User> users = new HashSet<>();
 
     public Role() {}
