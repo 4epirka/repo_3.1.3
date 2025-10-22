@@ -53,7 +53,8 @@ public class AdminController {
     public ResponseEntity<UserDTO> createUser(@RequestBody UserRequestDTO dto) {
         User user = new User();
         user.setUsername(dto.username());
-        user.setPassword(dto.password());
+        // пароль должен храниться только в зашифрованном виде
+        user.setPassword(passwordEncoder.encode(dto.password()));
         user.setName(dto.name());
         user.setAge(dto.age());
         user.setCountry(dto.country());
@@ -71,7 +72,10 @@ public class AdminController {
         return userService.findById(id)
                 .map(existing -> {
                     existing.setUsername(dto.username());
-                    existing.setPassword(passwordEncoder.encode(dto.password()));
+                    // пароль меняем только если он был передан и непустой
+                    if (dto.password() != null && !dto.password().isBlank()) {
+                        existing.setPassword(passwordEncoder.encode(dto.password()));
+                    }
                     existing.setName(dto.name());
                     existing.setAge(dto.age());
                     existing.setCountry(dto.country());
@@ -110,6 +114,13 @@ public class AdminController {
         return roleNames.stream()
                 .map(roleService::findByName)
                 .collect(Collectors.toSet());
+    }
+
+    @GetMapping("/roles")
+    public List<String> getAllRoleNames() {
+        return roleService.findAll().stream()
+                .map(Role::getName)
+                .toList();
     }
 
 }
