@@ -48,6 +48,21 @@ async function loadUsers() {
     }
 }
 
+// --- Загрузка всех доступных ролей для селектов ---
+async function loadRolesOptions() {
+    try {
+        const roles = await fetchJSON('/api/admin/roles');
+        const makeOptions = (selected = []) => {
+            return roles.map(r => `<option value="${r}">${r}</option>`).join('');
+        };
+        // Инициализируем списки без выбранных значений, выбор установим при открытии модалок
+        $('#create-roles').html(makeOptions());
+        $('#edit-roles').html(makeOptions());
+    } catch (err) {
+        console.error('Error loading roles', err);
+    }
+}
+
 // --- Открытие модального окна редактирования ---
 $(document).on('click', '.edit-btn', async function() {
     const id = $(this).data('id');
@@ -59,7 +74,12 @@ $(document).on('click', '.edit-btn', async function() {
     $('#edit-age').val(user.age);
     $('#edit-country').val(user.country);
     $('#edit-password').val('');
-    $('#edit-roles').val(Array.from(user.roles).join(', '));
+    // выставляем выбранные роли в мультиселекте
+    const rolesSelect = $('#edit-roles');
+    rolesSelect.find('option').each(function() {
+        const val = $(this).val();
+        $(this).prop('selected', user.roles.includes(val));
+    });
 
     $('#editUserModal').modal('show');
 });
@@ -69,7 +89,7 @@ $('#editUserForm').on('submit', async function(e) {
     e.preventDefault();
 
     const id = $('#edit-id').val();
-    const roles = $('#edit-roles').val().split(',').map(r => r.trim());
+    const roles = ($('#edit-roles').val() || []).map(r => r.trim());
     const password = $('#edit-password').val().trim();
 
     const user = {
@@ -124,7 +144,7 @@ $('#confirm-delete').on('click', async function() {
 $('#createUserForm').on('submit', async function(e) {
     e.preventDefault();
 
-    const roles = $('#create-roles').val().split(',').map(r => r.trim());
+    const roles = ($('#create-roles').val() || []).map(r => r.trim());
 
     const user = {
         username: $('#create-username').val(),
@@ -153,5 +173,6 @@ $('#createUserForm').on('submit', async function(e) {
 // --- Инициализация страницы ---
 $(document).ready(async function() {
     await loadCurrentUser();
+    await loadRolesOptions();
     await loadUsers();
 });
