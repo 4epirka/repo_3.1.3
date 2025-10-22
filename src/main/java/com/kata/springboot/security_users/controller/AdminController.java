@@ -91,6 +91,13 @@ public class AdminController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/roles")
+    public List<String> getAllRoles() {
+        return roleService.findAll().stream()
+                .map(Role::getName)
+                .toList();
+    }
+
     // --- Вспомогательные методы ---
 
     private UserDTO toDTO(User user) {
